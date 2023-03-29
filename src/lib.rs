@@ -9,7 +9,7 @@ pub mod edits;
 pub mod embeddings;
 pub mod models;
 
-#[derive(Deserialize, Clone, Copy)]
+#[derive(Deserialize, Serialize, Clone, Copy)]
 pub struct Usage {
     pub prompt_tokens: u32,
     pub completion_tokens: u32,

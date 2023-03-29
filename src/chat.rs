@@ -5,7 +5,7 @@ use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct ChatCompletion {
     pub id: String,
     pub object: String,
@@ -15,7 +15,7 @@ pub struct ChatCompletion {
     pub usage: Option<Usage>,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct ChatCompletionChoice {
     pub index: u64,
     pub message: ChatCompletionMessage,
@@ -30,10 +30,11 @@ pub struct ChatCompletionMessage {
     pub content: String,
     /// The name of the user in a multi-user chat
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub name: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug, Clone, Copy)]
+#[derive(Deserialize, Serialize, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[serde(rename_all = "lowercase")]
 pub enum ChatCompletionMessageRole {
     System,

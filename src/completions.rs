@@ -6,7 +6,7 @@ use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct Completion {
     pub id: String,
     pub created: u32,
@@ -15,7 +15,7 @@ pub struct Completion {
     pub usage: Usage,
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct CompletionChoice {
     pub text: String,
     pub index: u16,
