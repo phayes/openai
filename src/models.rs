@@ -3,7 +3,7 @@
 //! documentation to understand what models are available and the differences between them.
 
 use super::{openai_get, ApiResponseOrError};
-use serde::Deserialize;
+use serde::{Serialize, Deserialize};
 
 #[derive(Deserialize, Serialize, Clone)]
 pub struct Model {
