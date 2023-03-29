@@ -1,18 +1,22 @@
 use dotenvy::dotenv;
 use openai::{
     chat::{ChatCompletion, ChatCompletionMessage, ChatCompletionMessageRole},
-    models::ModelID,
+    set_key,
 };
-use std::io::{stdin, stdout, Write};
+use std::{
+    env,
+    io::{stdin, stdout, Write},
+};
 
 #[tokio::main]
 async fn main() {
     // Make sure you have a file named `.env` with the `OPENAI_KEY` environment variable defined!
     dotenv().unwrap();
+    set_key(env::var("OPENAI_KEY").unwrap());
 
     let mut messages = vec![ChatCompletionMessage {
         role: ChatCompletionMessageRole::System,
-        content: "You are a large language built into a command line interface as an example of what the `openai` Rust library made by Valentine Briese can do.".to_string(),
+        content: "You are a large language model built into a command line interface as an example of what the `openai` Rust library made by Valentine Briese can do.".to_string(),
         name: None,
     }];
 
@@ -29,7 +33,7 @@ async fn main() {
             name: None,
         });
 
-        let chat_completion = ChatCompletion::builder(ModelID::Gpt3_5Turbo, messages.clone())
+        let chat_completion = ChatCompletion::builder("gpt-3.5-turbo", messages.clone())
             .create()
             .await
             .unwrap()

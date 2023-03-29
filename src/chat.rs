@@ -1,6 +1,6 @@
 //! Given a chat conversation, the model will return a chat completion response.
 
-use super::{models::ModelID, openai_post, ApiResponseOrError, Usage};
+use super::{openai_post, ApiResponseOrError, Usage};
 use derive_builder::Builder;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -10,7 +10,7 @@ pub struct ChatCompletion {
     pub id: String,
     pub object: String,
     pub created: u64,
-    pub model: ModelID,
+    pub model: String,
     pub choices: Vec<ChatCompletionChoice>,
     pub usage: Option<Usage>,
 }
@@ -48,7 +48,7 @@ pub enum ChatCompletionMessageRole {
 #[builder(setter(strip_option, into))]
 pub struct ChatCompletionRequest {
     /// ID of the model to use. Currently, only `gpt-3.5-turbo` and `gpt-3.5-turbo-0301` are supported.
-    model: ModelID,
+    model: String,
     /// The messages to generate chat completions for, in the [chat format](https://platform.openai.com/docs/guides/chat/introduction).
     messages: Vec<ChatCompletionMessage>,
     /// What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
@@ -106,7 +106,7 @@ pub struct ChatCompletionRequest {
 
 impl ChatCompletion {
     pub fn builder(
-        model: ModelID,
+        model: &str,
         messages: impl Into<Vec<ChatCompletionMessage>>,
     ) -> ChatCompletionBuilder {
         ChatCompletionBuilder::create_empty()
@@ -128,14 +128,17 @@ impl ChatCompletionBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::set_key;
     use dotenvy::dotenv;
+    use std::env;
 
     #[tokio::test]
     async fn chat() {
         dotenv().ok();
+        set_key(env::var("OPENAI_KEY").unwrap());
 
         let chat_completion = ChatCompletion::builder(
-            ModelID::Gpt3_5Turbo,
+            "gpt-3.5-turbo",
             [ChatCompletionMessage {
                 role: ChatCompletionMessageRole::User,
                 content: "Hello!".to_string(),
@@ -150,7 +153,7 @@ mod tests {
 
         assert_eq!(
             chat_completion.choices.first().unwrap().message.content,
-            "\n\nHello there! How can I assist you today?"
+            "Hello there! How can I assist you today?"
         );
     }
 }
